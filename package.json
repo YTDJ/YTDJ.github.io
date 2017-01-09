@@ -1,0 +1,15 @@
+{
+  "name": "YTDJ",
+  "main": "server.js",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "license": "MIT",
+  "engines": {
+    "node": "^6.9.4"
+  },
+  "dependencies": {
+    "express": "^4.14.0"
+  }
+}
