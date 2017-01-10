@@ -17,6 +17,7 @@ var getInfo = function(videoId){
        myData.duration = parseTimeStamp(data.items[0].contentDetails.duration);
 
        info.push(myData);
+       drawQueue();
      },
      type: 'GET'
   });
@@ -34,6 +35,16 @@ var parseTimeStamp = function (input){
     duration.totalseconds = duration.hours * 3600  + duration.minutes * 60 + duration.seconds;
   }
   return duration;
+}
+
+var drawQueue = function(){
+  var queueString = '<h2 class="col-xs-12">Queue</h2>';
+  for (var i = 0; i<info.length; i++) {
+    var song = info[i];
+    queueString +='<p class="col-xs-9">'+ song.title + '</p><p class="col-xs-3">'+
+    song.duration.hours + ':'+ song.duration.minutes + ':'+ song.duration.seconds +'</p>'
+  }
+  $('#queue').html(queueString);
 }
 //$('#videobox > div:nth-child(2)').YTPPlay()
 var mute = function(){
@@ -86,13 +97,15 @@ var addVideo = function (videoId){
 $(document).ready(function() {
     //do jQuery stuff when DOM is ready
     //jQuery.mbYTPlayer.apiKey = "" //give key to the library
-    $('#videobox > div:nth-child(1)').YTPlayer();
-    $('#videobox > div:nth-child(2)').YTPlayer();
-  //  getInfo("oHg5SJYRHA0");
+
+    //$('#videobox > div:nth-child(1)').YTPlayer();
+    //$('#videobox > div:nth-child(2)').YTPlayer();
+  ///  getInfo("oHg5SJYRHA0");
 //    addVideo('EyoutEHpPAU');
 
 
-addVideo("EyoutEHpPAU");
-//getInfo("EyoutEHpPAU");
+//addVideo("EyoutEHpPAU");
+getInfo("EyoutEHpPAU");
+//console.log(info)
 
 });
