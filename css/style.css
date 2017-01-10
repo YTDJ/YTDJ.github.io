@@ -5,7 +5,7 @@ html body {
   background: -moz-linear-gradient(right, black, #633115); /* For Firefox 3.6 to 15 */
   background: linear-gradient(to right, black , #633115); /* Standard syntax */
 }
-#video1{
+.player{
   width: 400px;
   height: 300px;
 }
