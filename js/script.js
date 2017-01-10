@@ -1,16 +1,24 @@
 
+var info = [];
 var getInfo = function(videoId){
   $.ajax({
-     url: "https://www.googleapis.com/youtube/v3/videos?id="+ videoId +"&part=snippet,contentDetails&key=&fields=items(id,snippet,contentDetails)",
-     type: 'GET',
-     data: {format: 'json'},
-     dataType: 'jsonp',
+     url: "https://www.googleapis.com/youtube/v3/videos?id="+ videoId +"&key=" + key + "&part=snippet,contentDetails&fields=items(id,snippet,contentDetails)",
+     data: {
+        format: 'json'
+     },
      error: function() {
         $('#info').html('<p>An error has occurred</p>');
      },
+     dataType: 'jsonp',
      success: function(data) {
-       console.log(data)
-     }
+       var myData = {};
+       myData.id = data.items[0].id;
+       myData.title = data.items[0].snippet.title;
+       myData.duration = data.items[0].contentDetails.duration;
+
+       info.push(myData);
+     },
+     type: 'GET'
   });
 }
 //$('#videobox > div:nth-child(2)').YTPPlay()
@@ -51,12 +59,14 @@ function getSoundAndFadeAudio (audiosnippetId) {
     }, 200);
 
 }
-
 var addVideo = function (videoId){
   $('#videobox').append('<div class=\"player\" data-property=\"{videoURL:\'https://www.youtube.com/watch?v='+ videoId +'\',containment:\'self\',autoPlay:false, mute:true, startAt:0, opacity:1, stopMovieOnBlur:false}\">My video</div>')
 
+//  info = getInfo(videoId);
+  //console.log(info);
   var queueLength = $('#videobox > div').length;
-  $('#videobox > div:nth-child('+ (queueLength+1) +')').YTPlayer();
+  console.log(queueLength);
+  $('#videobox > div:nth-child('+ queueLength +')').YTPlayer();
 }
 
 $(document).ready(function() {
@@ -68,6 +78,7 @@ $(document).ready(function() {
 //    addVideo('EyoutEHpPAU');
 
 
-
+addVideo("EyoutEHpPAU");
+//getInfo("EyoutEHpPAU");
 
 });
