@@ -14,12 +14,26 @@ var getInfo = function(videoId){
        var myData = {};
        myData.id = data.items[0].id;
        myData.title = data.items[0].snippet.title;
-       myData.duration = data.items[0].contentDetails.duration;
+       myData.duration = parseTimeStamp(data.items[0].contentDetails.duration);
 
        info.push(myData);
      },
      type: 'GET'
   });
+}
+
+var parseTimeStamp = function (input){
+  var reptms = /^PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?$/;
+  var duration = {}
+
+  if (reptms.test(input)) {
+    var matches = reptms.exec(input);
+    duration.hours = (matches[1])?Number(matches[1]):0;
+    duration.minutes = (matches[2])?Number(matches[2]):0;
+    duration.seconds = (matches[3])?Number(matches[3]):0;
+    duration.totalseconds = duration.hours * 3600  + duration.minutes * 60 + duration.seconds;
+  }
+  return duration;
 }
 //$('#videobox > div:nth-child(2)').YTPPlay()
 var mute = function(){
