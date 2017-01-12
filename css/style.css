@@ -10,3 +10,37 @@ html body {
   width: 400px;
   height: 300px;
 }
+
+
+
+/*Dragable CSS*/
+/*http://www.knockmeout.net/2012/02/revisiting-dragging-dropping-and.html*/
+
+::-moz-selection { background: #854100; }
+::selection { background: #854100; }
+
+
+.item {
+    padding:10px;
+    margin: 10px 10px;
+    width: 100%;
+    color:orange;
+    background-color: black;
+    cursor: move;
+}
+a {
+    color:orange;
+}
+.item input {
+    width: 100%;
+    background: #140A00;
+    outline: none;
+    border: none;
+}
+.item *:focus {outline: none;}
+
+
+#results {
+    margin-left: 175px;
+    width: 150px;
+}

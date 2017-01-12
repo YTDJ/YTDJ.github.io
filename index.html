@@ -13,6 +13,12 @@
   <link href="YTPlayer/jquery.mb.YTPlayer.min.css" media="all" rel="stylesheet" type="text/css">
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
   <script src="YTPlayer/jquery.mb.YTPlayer.js"></script>
+  <!-- Knockout draggable -->
+  <!-- <script type='text/javascript' src='../ext/jquery-1.9.1.js'></script> -->
+  <script type="text/javascript" src="js/jquery-ui.js"></script>
+
+  <script type='text/javascript' src="js/knockout-3.4.0.js"></script>
+  <script type='text/javascript' src="js/knockout-sortable.js"></script>
   <!-- My Files -->
   <link rel="stylesheet" href="css/style.css">
   <script src="js/key.js"></script>
@@ -21,19 +27,47 @@
 </head>
 
 <body>
-  <h1>Hi</h1>
-  <div class="col-sm-7 col-sm-offset-1" id="videobox">
+  <div class="text-center">
+    <h1>YTDJ - Youtube DJ</h1>
+  </div>
+  <div class="col-sm-6 col-md-5 col-lg-4 col-lg-offset-1" id="videobox">
     <div class="player" data-property="{videoURL:'https://www.youtube.com/watch?v=oHg5SJYRHA0',containment:'self',autoPlay:false, mute:true, startAt:0, opacity:1, stopMovieOnBlur:false}">My video</div>
     <div class="player" data-property="{videoURL:'https://www.youtube.com/watch?v=EyoutEHpPAU',containment:'self',autoPlay:false, mute:true, startAt:0, opacity:1, stopMovieOnBlur:false}">My video</div>
   </div>
-  <div class="col-sm-3 col-md-2" id="queue">
-    <!-- <h2 class="col-xs-12">Queue</h2>
-    <p class="col-xs-9">Song 1</p><p class="col-xs-3">hh:mm:ss</p> -->
 
+
+
+  <div class="col-sm-6 col-md-7 col-lg-offset-1 col-lg-5">
+      <h3 class="text-center">Play Queue</h3>
+      <div class="container col-xs-12" data-bind="sortable: tasks">
+          <div class="item">
+              <span data-bind="visible: !$root.isTaskSelected($data)">
+                  <a href="#" data-bind="text: name, click: $root.selectedTask"></a>
+              </span>
+              <span data-bind="visibleAndSelect: $root.isTaskSelected($data)">
+                  <input data-bind="value: name, event: { blur: $root.clearTask }" />
+              </span>
+          </div>
+      </div>
+      <div class="text-center">
+        <a  href="#" data-bind="click: addTask">Add Song Using Youtube URL</a>
+      </div>
   </div>
   <br>
 
 <!-- <button onclick="console.log(jQuery('#video1').YTPGetVideoData())">video info</button> -->
+
+<!-- http://www.knockmeout.net/2012/02/revisiting-dragging-dropping-and.html -->
+
+
+
+<div class="clearfix"></div>
+<div id="results">
+    <h3>Tasks</h3>
+    <ul data-bind="foreach: tasks">
+        <li data-bind="text: name"></li>
+    </ul>
+</div>
 
 
 </body>
