@@ -274,7 +274,7 @@
 
                                         //if using deferred updates on knockout 3.4, force updates
                                         if (ko.options && ko.options.deferUpdates) {
-                                            ko.tasks.runEarly();
+                                            ko.songs.runEarly();
                                         }
                                     }
 

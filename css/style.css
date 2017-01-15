@@ -11,6 +11,19 @@ html body {
   height: 300px;
 }
 
+button{
+  background: #D9950E;
+  color: #140A00;
+  outline: none;
+  border: none;
+}
+button:hover{
+  background: orange;
+}
+
+#addSong{
+  margin-top: .75em;
+}
 
 
 /*Dragable CSS*/

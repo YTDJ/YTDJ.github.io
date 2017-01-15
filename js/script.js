@@ -1,6 +1,5 @@
 
-var info = [];
-var getInfo = function(videoId){
+var getInfo = function(videoId, SongObj){ //SongObj param is optional
   $.ajax({
      url: "https://www.googleapis.com/youtube/v3/videos?id="+ videoId +"&key=" + key + "&part=snippet,contentDetails&fields=items(id,snippet,contentDetails)",
      data: {
@@ -15,9 +14,15 @@ var getInfo = function(videoId){
        myData.id = data.items[0].id;
        myData.title = data.items[0].snippet.title;
        myData.duration = parseTimeStamp(data.items[0].contentDetails.duration);
-
-       info.push(myData);
-       drawQueue();
+       if(SongObj === undefined){ //if no SongObj was passed
+         console.log(myData);
+         return myData;
+       } else { //write results to SongObj
+         console.log("Adding " + SongObj.id());
+         SongObj.title(myData.title)
+         SongObj.duration(myData.duration.pretty)
+         console.log(SongObj.title());
+       }
      },
      type: 'GET'
   });
@@ -33,19 +38,14 @@ var parseTimeStamp = function (input){
     duration.minutes = (matches[2])?Number(matches[2]):0;
     duration.seconds = (matches[3])?Number(matches[3]):0;
     duration.totalseconds = duration.hours * 3600  + duration.minutes * 60 + duration.seconds;
+
+    duration.pretty = "";
+    if(duration.hours){duration.pretty += duration.hours + ":"}
+    duration.pretty += duration.minutes + ":"+ duration.seconds;
   }
   return duration;
 }
 
-var drawQueue = function(){
-  var queueString = '<h2 class="col-xs-12">Queue</h2>';
-  for (var i = 0; i<info.length; i++) {
-    var song = info[i];
-    queueString +='<p class="col-xs-9">'+ song.title + '</p><p class="col-xs-3">'+
-    song.duration.hours + ':'+ song.duration.minutes + ':'+ song.duration.seconds +'</p>'
-  }
-  $('#queue').html(queueString);
-}
 //$('#videobox > div:nth-child(2)').YTPPlay()
 var mute = function(){
   var t = $('#video1').get(0)
@@ -96,40 +96,41 @@ var addVideo = function (videoId){
 
 $(document).ready(function() {
   //http://www.knockmeout.net/2012/02/revisiting-dragging-dropping-and.html
-  var Task = function(name) {
-      this.name = ko.observable(name);
+  var Song = function(id) {
+      this.title = ko.observable("No data found for id '" + id + "'");
+      this.id = ko.observable(id);
+      this.duration = ko.observable(null);
+      this.durationSeconds = ko.observable(null);
+      getInfo(id, this);
   }
 
   var ViewModel = function() {
       var self = this;
-      self.tasks = ko.observableArray([
-          new Task("Get dog food"),
-          new Task("Mow lawn"),
-          new Task("Fix car"),
-          new Task("Fix fence"),
-          new Task("Walk dog"),
-          new Task("Read book")
+      self.songs = ko.observableArray([
+          new Song("oHg5SJYRHA0"),
+          new Song("EyoutEHpPAU")
       ]);
 
 
-      self.selectedTask = ko.observable();
-      self.clearTask = function(data, event) {
-          if (data === self.selectedTask()) {
-              self.selectedTask(null);
+      self.selectedSong = ko.observable();
+      self.newSongId = ko.observable();
+      self.clearSong = function(data, event) {
+          if (data === self.selectedSong()) {
+              self.selectedSong(null);
           }
 
-          if (data.name() === "") {
-             self.tasks.remove(data);
+          if (data.title() === "") {
+             self.songs.remove(data);
           }
       };
-      self.addTask = function() {
-          var task = new Task("new");
-          self.selectedTask(task);
-          self.tasks.push(task);
+      self.addNewSong = function() {
+          var song = new Song(this.newSongId());
+          self.selectedSong(song);
+          self.songs.push(song);
       };
 
-      self.isTaskSelected = function(task) {
-         return task === self.selectedTask();
+      self.isSongSelected = function(song) {
+         return song === self.selectedSong();
       };
   };
 
@@ -140,7 +141,7 @@ $(document).ready(function() {
           if (valueAccessor()) {
               setTimeout(function() {
                   $(element).find("input").focus().select();
-              }, 0); //new tasks are not in DOM yet
+              }, 0); //new songs are not in DOM yet
           }
       }
   };
@@ -149,8 +150,8 @@ $(document).ready(function() {
     //do jQuery stuff when DOM is ready
     //jQuery.mbYTPlayer.apiKey = "" //give key to the library
 
-    $('#videobox > div:nth-child(1)').YTPlayer();
-    $('#videobox > div:nth-child(2)').YTPlayer();
+//    $('#videobox > div:nth-child(1)').YTPlayer();
+//    $('#videobox > div:nth-child(2)').YTPlayer();
   ///  getInfo("oHg5SJYRHA0");
 //    addVideo('EyoutEHpPAU');
 

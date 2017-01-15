@@ -39,18 +39,25 @@
 
   <div class="col-sm-6 col-md-7 col-lg-offset-1 col-lg-5">
       <h3 class="text-center">Play Queue</h3>
-      <div class="container col-xs-12" data-bind="sortable: tasks">
+      <div class="container col-xs-12" data-bind="sortable: songs">
           <div class="item">
-              <span data-bind="visible: !$root.isTaskSelected($data)">
-                  <a href="#" data-bind="text: name, click: $root.selectedTask"></a>
+              <span data-bind="visible: !$root.isSongSelected($data)">
+                  <a data-bind="attr:{href:id}, text: title, click: $root.selectedSong"></a>
               </span>
-              <span data-bind="visibleAndSelect: $root.isTaskSelected($data)">
-                  <input data-bind="value: name, event: { blur: $root.clearTask }" />
+              <span data-bind="visibleAndSelect: $root.isSongSelected($data)">
+                  <input data-bind="value: title, event: { blur: $root.clearSong }" />
+              </span>
+              <span style="float:right" data-bind="visible: !$root.isSongSelected($data)">
+                <span data-bind="text: duration"></span>
+                <span class="glyphicon glyphicon-remove">
               </span>
           </div>
       </div>
-      <div class="text-center">
-        <a  href="#" data-bind="click: addTask">Add Song Using Youtube URL</a>
+      <div class="container col-xs-12 text-center">
+        <form id="addSong" class="item">
+          <input data-bind="value: newSongId" placeholder="Enter a video id from YouTube URL..."/>
+            <button id="addSong" data-bind="click: addNewSong">Add Song</button>
+        </form>
       </div>
   </div>
   <br>
@@ -63,8 +70,8 @@
 
 <div class="clearfix"></div>
 <div id="results">
-    <h3>Tasks</h3>
-    <ul data-bind="foreach: tasks">
+    <h3>Songs</h3>
+    <ul data-bind="foreach: songs">
         <li data-bind="text: name"></li>
     </ul>
 </div>
