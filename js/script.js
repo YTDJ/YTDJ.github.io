@@ -114,19 +114,15 @@ $(document).ready(function() {
 
       self.selectedSong = ko.observable();
       self.newSongId = ko.observable();
-      self.clearSong = function(data, event) {
-          if (data === self.selectedSong()) {
-              self.selectedSong(null);
-          }
-
-          if (data.title() === "") {
-             self.songs.remove(data);
-          }
+      self.deleteSong = function(data, event) {
+          self.songs.remove(data);
       };
+
       self.addNewSong = function() {
           var song = new Song(this.newSongId());
           self.selectedSong(song);
           self.songs.push(song);
+          this.newSongId("");
       };
 
       self.isSongSelected = function(song) {

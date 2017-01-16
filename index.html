@@ -41,19 +41,14 @@
       <h3 class="text-center">Play Queue</h3>
       <div class="container col-xs-12" data-bind="sortable: songs">
           <div class="item">
-              <span data-bind="visible: !$root.isSongSelected($data)">
-                  <a data-bind="attr:{href:id}, text: title, click: $root.selectedSong"></a>
-              </span>
-              <span data-bind="visibleAndSelect: $root.isSongSelected($data)">
-                  <input data-bind="value: title, event: { blur: $root.clearSong }" />
-              </span>
-              <span style="float:right" data-bind="visible: !$root.isSongSelected($data)">
+              <a data-bind="attr:{href:id}, text: title, click: $root.selectedSong"></a>
+              <span style="float:right">
                 <span data-bind="text: duration"></span>
-                <span class="glyphicon glyphicon-remove">
+                <span data-bind="click: $root.deleteSong" class="glyphicon glyphicon-remove">
               </span>
           </div>
       </div>
-      <div class="container col-xs-12 text-center">
+      <div class="col-xs-12 text-center">
         <form id="addSong" class="item">
           <input data-bind="value: newSongId" placeholder="Enter a video id from YouTube URL..."/>
             <button id="addSong" data-bind="click: addNewSong">Add Song</button>

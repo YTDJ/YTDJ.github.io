@@ -41,6 +41,9 @@ button:hover{
     background-color: black;
     cursor: move;
 }
+.item .glyphicon-remove{
+      cursor: default;
+}
 a {
     color:orange;
 }
