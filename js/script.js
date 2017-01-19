@@ -64,6 +64,14 @@ var fadeOut = function(){
   //.animate({1.0: 0.0}, 1000);
 }
 
+// window.setInterval(function(){
+// }, 5000);
+
+
+
+
+
+
 function getSoundAndFadeAudio (audiosnippetId) {
 
     var sound = document.getElementById(mbYTP_video1);
@@ -85,23 +93,37 @@ function getSoundAndFadeAudio (audiosnippetId) {
 
 }
 var addVideo = function (videoId){
-  $('#videobox').append('<div class=\"player\" data-property=\"{videoURL:\'https://www.youtube.com/watch?v='+ videoId +'\',containment:\'self\',autoPlay:false, mute:true, startAt:0, opacity:1, stopMovieOnBlur:false}\">My video</div>')
+  $('#videobox').append('<div class=\"player\" data-property=\"{videoURL:\'https://www.youtube.com/watch?v='+ videoId +'\',containment:\'self\',autoPlay:false, mute:true, startAt:0, opacity:1, showControls:false, stopMovieOnBlur:false}\"></div>')
 
-//  info = getInfo(videoId);
-  //console.log(info);
   var queueLength = $('#videobox > div').length;
   console.log(queueLength);
   $('#videobox > div:nth-child('+ queueLength +')').YTPlayer();
 }
 
+var crossfade = function(){
+  var video1 = $('#videobox > div:nth-child(1)');
+  var timeStatus = video1.YTPManageProgress()
+  var currentTime = 12//timeStatus.currentTime;
+  var totalTime = timeStatus.totalTime;
+  console.log(timeStatus);
+  addVideo(self.songs()[0]);
+};
+
 $(document).ready(function() {
+  //Draggable operations
   //http://www.knockmeout.net/2012/02/revisiting-dragging-dropping-and.html
   var Song = function(id) {
-      this.title = ko.observable("No data found for id '" + id + "'");
+    if(id === undefined){//no arg passed => create blank song
+      this.title = ko.observable("");
+      this.timeLeft = ko.observable("-:--");
+    }else{
+      this.title = ko.observable("!!! - Cannot load metadata for '" + id + "'");
       this.id = ko.observable(id);
-      this.duration = ko.observable(null);
+      this.duration = ko.observable("");
+      this.timeLeft = ko.observable("-:--");
       this.durationSeconds = ko.observable(null);
       getInfo(id, this);
+    }
   }
 
   var ViewModel = function() {
@@ -111,23 +133,31 @@ $(document).ready(function() {
           new Song("EyoutEHpPAU")
       ]);
 
-
+      self.currentSong = ko.observable(new Song());
       self.selectedSong = ko.observable();
       self.newSongId = ko.observable();
+      self.crossfadeLength = ko.observable(6);
+
       self.deleteSong = function(data, event) {
           self.songs.remove(data);
       };
 
       self.addNewSong = function() {
+        //grab id from var bound to input field
           var song = new Song(this.newSongId());
           self.selectedSong(song);
           self.songs.push(song);
           this.newSongId("");
       };
 
+      self.skip = function() {
+        self.currentSong(self.songs.shift());
+      };
+
       self.isSongSelected = function(song) {
          return song === self.selectedSong();
       };
+
   };
 
   //control visibility, give element focus, and select the contents (in order)
@@ -143,17 +173,24 @@ $(document).ready(function() {
   };
 
   ko.applyBindings(new ViewModel());
+  $('#videobox > div:nth-child(1)').YTPlayer();
+
+
+
+
+
+
+
     //do jQuery stuff when DOM is ready
     //jQuery.mbYTPlayer.apiKey = "" //give key to the library
 
-//    $('#videobox > div:nth-child(1)').YTPlayer();
 //    $('#videobox > div:nth-child(2)').YTPlayer();
   ///  getInfo("oHg5SJYRHA0");
 //    addVideo('EyoutEHpPAU');
 
 
 //addVideo("EyoutEHpPAU");
-getInfo("EyoutEHpPAU");
-//console.log(info)
+//getInfo("EyoutEHpPAU");
+
 
 });

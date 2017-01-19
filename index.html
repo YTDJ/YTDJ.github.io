@@ -27,50 +27,53 @@
 </head>
 
 <body>
-  <div class="text-center">
-    <h1>YTDJ - Youtube DJ</h1>
-  </div>
-  <div class="col-sm-6 col-md-5 col-lg-4 col-lg-offset-1" id="videobox">
-    <div class="player" data-property="{videoURL:'https://www.youtube.com/watch?v=oHg5SJYRHA0',containment:'self',autoPlay:false, mute:true, startAt:0, opacity:1, stopMovieOnBlur:false}">My video</div>
-    <div class="player" data-property="{videoURL:'https://www.youtube.com/watch?v=EyoutEHpPAU',containment:'self',autoPlay:false, mute:true, startAt:0, opacity:1, stopMovieOnBlur:false}">My video</div>
-  </div>
+  <div class="container">
+    <div class="text-center">
+      <h1>YTDJ - Youtube DJ</h1>
+    </div>
 
+    <div class="row">
+      <div class="col-md-12">
+        <div class="col-md-12 marquee">
+          <h2 data-bind="text: currentSong().title"></h2>
+        </div>
+      </div>
+      <div class="col-sm-6 col-md-5 col-lg-offset-1 col-lg-5">
+        <div id="contols" class="col-xs-12 col-md-offset-1 col-lg-offset-2 col-lg-8 text-center">
+          <span class="col-md-4" data-bind="text: currentSong().timeLeft">3:10</span>
+          <span class="col-md-4 glyphicon glyphicon-play"></span>
+          <span data-bind="click: skip" class="col-md-4 glyphicon glyphicon-forward"></span>
+        </div>
 
-
-  <div class="col-sm-6 col-md-7 col-lg-offset-1 col-lg-5">
-      <h3 class="text-center">Play Queue</h3>
-      <div class="container col-xs-12" data-bind="sortable: songs">
-          <div class="item">
-              <a data-bind="attr:{href:id}, text: title, click: $root.selectedSong"></a>
-              <span style="float:right">
-                <span data-bind="text: duration"></span>
-                <span data-bind="click: $root.deleteSong" class="glyphicon glyphicon-remove">
-              </span>
+        <!-- http://www.knockmeout.net/2012/02/revisiting-dragging-dropping-and.html -->
+        <div class="col-xs-12" data-bind="sortable: songs">
+          <div class="item row">
+            <div data-bind="attr:{href:id}, text: title, click: $root.selectedSong"
+            class="col-lg-8 col-xs-9 text-left"></div>
+            <div class="col-lg-4 col-xs-3 text-right">
+              <span data-bind="text: duration"></span>
+              <span data-bind="click: $root.deleteSong" class="glyphicon glyphicon-remove">
+              </div>
+            </div>
           </div>
+          <div class="col-xs-12 text-center">
+            <form id="addSong" class="item">
+              <input data-bind="value: newSongId" placeholder="Enter a video id from YouTube URL..."/>
+              <button id="addSong" data-bind="click: addNewSong">Add Song</button>
+            </form>
+          </div>
+        </div>
+
+      <div class="col-xs-6 col-md-7 col-lg-4 col-lg-offset-1" id="videobox">
+        <div class="player" data-property="{videoURL:'https://www.youtube.com/watch?v=oHg5SJYRHA0',containment:'self',autoPlay:false, mute:true, startAt:0, opacity:1, stopMovieOnBlur:false}"></div>
+        <div class="player" data-property="{videoURL:'https://www.youtube.com/watch?v=EyoutEHpPAU',containment:'self',autoPlay:false, mute:true, startAt:0, opacity:1, stopMovieOnBlur:false}"></div>
       </div>
-      <div class="col-xs-12 text-center">
-        <form id="addSong" class="item">
-          <input data-bind="value: newSongId" placeholder="Enter a video id from YouTube URL..."/>
-            <button id="addSong" data-bind="click: addNewSong">Add Song</button>
-        </form>
-      </div>
-  </div>
-  <br>
-
-<!-- <button onclick="console.log(jQuery('#video1').YTPGetVideoData())">video info</button> -->
-
-<!-- http://www.knockmeout.net/2012/02/revisiting-dragging-dropping-and.html -->
+    </div>
 
 
 
-<div class="clearfix"></div>
-<div id="results">
-    <h3>Songs</h3>
-    <ul data-bind="foreach: songs">
-        <li data-bind="text: name"></li>
-    </ul>
-</div>
 
+    </div>
 
-</body>
-</html>
+  </body>
+  </html>
