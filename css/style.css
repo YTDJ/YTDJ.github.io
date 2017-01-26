@@ -33,6 +33,7 @@ button:hover{
     white-space: nowrap;
     overflow: hidden;
     box-sizing: border-box;
+    height: 5em;
 }
 .marquee h2 {
     color: orange;

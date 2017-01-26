@@ -69,29 +69,31 @@ var fadeOut = function(){
 
 
 
+function fadeIn(duration) {
+    var video1 = $('#videobox > div:nth-child(1)');
+    var volume = 1; //Start at 1 to avoid 'unmute' jitter caused by library ln1009
+    var timer;
+    var duration = 12;
 
+    var fadeAudio = function () {
+      console.log("Fading in: " + volume + "")
+      video1.YTPSetVolume(volume);
+      volume++;
+      if(volume > 100) clearTimeout(timer);
+    };
 
-
-function getSoundAndFadeAudio (audiosnippetId) {
-
-    var sound = document.getElementById(mbYTP_video1);
-
-    // Set the point in playback that fadeout begins. This is for a 2 second fade out.
-    var fadePoint = sound.duration - 2;
-
-    var fadeAudio = setInterval(function () {
-
-        // Only fade if past the fade out point or not at zero already
-        if ((sound.currentTime >= fadePoint) && (sound.volume != 0.0)) {
-            sound.volume -= 0.1;
-        }
-        // When volume at zero stop all the intervalling
-        if (sound.volume === 0.0) {
-            clearInterval(fadeAudio);
-        }
-    }, 200);
-
+    video1.YTPPlay();
+    video1.YTPSetVolume(volume);
+    /*
+    Convert to MS: durationMS = duration * 1000
+    Spread out the 100 volume shifts over the duration:
+    bumpVolumeEvery = durationMS / 100
+    Or just cancel zeros. 1000/100 = 10 :)
+    */
+    timer = setInterval(fadeAudio, duration*10);
 }
+
+
 var addVideo = function (videoId){
   $('#videobox').append('<div class=\"player\" data-property=\"{videoURL:\'https://www.youtube.com/watch?v='+ videoId +'\',containment:\'self\',autoPlay:false, mute:true, startAt:0, opacity:1, showControls:false, stopMovieOnBlur:false}\"></div>')
 
@@ -152,6 +154,16 @@ $(document).ready(function() {
 
       self.skip = function() {
         self.currentSong(self.songs.shift());
+      };
+      self.play = function() {
+        console.log(self.currentSong().title())
+        if(self.currentSong().title() === ""){
+          self.currentSong(self.songs.shift());
+        }
+        fadeIn();
+      };
+      self.pause = function() {
+        console.log("Pause...")
       };
 
       self.isSongSelected = function(song) {
