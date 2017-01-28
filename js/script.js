@@ -47,11 +47,11 @@ var parseTimeStamp = function (input){
 }
 
 var fadeInTimers = [];
-function fadeIn(duration, volume) {
+function fadeIn(duration) {
     //video1.YTPSetVolume(undefined); acts like mute/unmute if called twice, but also resets the volume to about 10.
     var video1 = $('#videobox > div:nth-child(1)');
     var timer;
-    var volume = volume | 10; //Vol=0 or Mute followed by <10 goes to 10
+    var volume = 10; //Vol=0 or Mute followed by <10 goes to 10
 
     var fadeAudio = function () {
       video1.YTPSetVolume(volume);
@@ -72,11 +72,11 @@ function fadeIn(duration, volume) {
     return timer; //returning timer so that the fade in can be stopped.
 }
 
-function fadeOut(duration, volume) {
+function fadeOut(duration) {
     var video1 = $('#videobox > div:nth-child(1)');
     var timer;
-    var volume = volume | 99; //Seting to 100 when at 100 acts as mute... Using 99
-    //console.log(volume)
+    var currentVolume = video1[0].opt.vol
+    var volume = currentVolume - 1 //Setting volume to what it already is acts as mute...
 
     var fadeAudio = function () {
       video1.YTPSetVolume(volume);
@@ -91,20 +91,16 @@ function fadeOut(duration, volume) {
 }
 
 
-var addVideo = function (videoId){
-  $('#videobox').append('<div class=\"player\" data-property=\"{videoURL:\'https://www.youtube.com/watch?v='+ videoId +'\',containment:\'self\',autoPlay:false, mute:true, startAt:0, opacity:1, showControls:false, stopMovieOnBlur:false}\"></div>')
 
-  var queueLength = $('#videobox > div').length;
-  var player = $('#videobox > div:nth-child('+ queueLength +')');
-  player.YTPlayer();
 
-  player.on("YTPReady",function(e){
-    console.log("done!")
+var player1 = $('#videobox > div:nth-child(1)')
+console.log("beep")
+$('#videobox > div:nth-child(1)').on("YTPData",function(e){
    var currentTime = e.time;
-       console.log(currentTime)
+   console.log(currentTime)
+
    //your code goes here
 });
-}
 
 var crossfade = function(){
   var video1 = $('#videobox > div:nth-child(1)');
@@ -165,15 +161,15 @@ $(document).ready(function() {
       self.skip = function() {
         self.pause();
         self.currentSong(self.songs.shift());
+        self.addVideo(self.songs()[0].id())
       };
       self.play = function() {
         console.log(self.currentSong().title())
         //Auto skip if song is empty
         if(self.currentSong().title() === ""){
-          self.currentSong(self.songs.shift());
+          self.skip();
         }
         self.fadeInTimer = fadeIn(self.inSpeed());
-        console.log(self.inSpeed())
       };
       self.pause = function() {
         clearTimeout(self.fadeInTimer)//Stop the fade in.
@@ -183,6 +179,29 @@ $(document).ready(function() {
       self.isSongSelected = function(song) {
          return song === self.selectedSong();
       };
+
+      self.addVideo = function (videoId){
+        $('#videobox').append('<div class=\"player\" data-property=\"{videoURL:\'https://www.youtube.com/watch?v='+ videoId +'\',containment:\'self\',autoPlay:false, mute:true, startAt:0, opacity:1, showControls:false, stopMovieOnBlur:false}\"></div>')
+
+        var queueLength = $('#videobox > div').length;
+        var player = $('#videobox > div:nth-child('+ queueLength +')');
+        player.YTPlayer();
+
+        player.on("YTPReady",function(e){
+          console.log("Video loaded!")
+          var totalTime = player[0].opt.containment[0].totalTime
+          console.log(totalTime)
+          player.on("YTPTime",function(e){
+            var currentTime = e.time;
+            if(totalTime - currentTime - 120 === 0){
+              console.log("load the next song!!!!!")
+            }
+            console.log(currentTime + " (take off in " + (totalTime - currentTime - 120) + ")")
+         });
+      });
+    }
+
+
 
   };
 
