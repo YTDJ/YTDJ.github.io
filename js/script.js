@@ -46,50 +46,47 @@ var parseTimeStamp = function (input){
   return duration;
 }
 
-//$('#videobox > div:nth-child(2)').YTPPlay()
-var mute = function(){
-  var t = $('#video1').get(0)
-  t.player.setVolume( 0 );
-  if( t.volumeBar && t.volumeBar.length && t.volumeBar.width() > 10 ) {
-    t.volumeBar.updateSliderVal( 0 );
-  }
-}
-t = $('#video1').get(0);
-var fadeOut = function(){
-  var t = $('#video1').get(0)
-  t.player.setVolume( 0 );
-  if( t.volumeBar && t.volumeBar.length && t.volumeBar.width() > 10 ) {
-    t.volumeBar.updateSliderVal( 0 );
-  }
-  //.animate({1.0: 0.0}, 1000);
-}
-
-// window.setInterval(function(){
-// }, 5000);
-
-
-
-function fadeIn(duration) {
+var fadeInTimers = [];
+function fadeIn(duration, volume) {
+    //video1.YTPSetVolume(undefined); acts like mute/unmute if called twice, but also resets the volume to about 10.
     var video1 = $('#videobox > div:nth-child(1)');
-    var volume = 1; //Start at 1 to avoid 'unmute' jitter caused by library ln1009
     var timer;
-    var duration = 12;
+    var volume = volume | 10; //Vol=0 or Mute followed by <10 goes to 10
 
     var fadeAudio = function () {
-      console.log("Fading in: " + volume + "")
       video1.YTPSetVolume(volume);
       volume++;
-      if(volume > 100) clearTimeout(timer);
+      if(volume > 100) {
+        clearTimeout(timer);
+        console.log("Fade in complete")
+      }
     };
 
     video1.YTPPlay();
-    video1.YTPSetVolume(volume);
+    video1.YTPSetVolume(0);
     /*
-    Convert to MS: durationMS = duration * 1000
-    Spread out the 100 volume shifts over the duration:
-    bumpVolumeEvery = durationMS / 100
-    Or just cancel zeros. 1000/100 = 10 :)
+    multiply by 1000 to get to Seconds
+    divide by numberOfVolumeBumps
     */
+    timer = setInterval(fadeAudio, duration*1000/90);
+    return timer; //returning timer so that the fade in can be stopped.
+}
+
+function fadeOut(duration, volume) {
+    var video1 = $('#videobox > div:nth-child(1)');
+    var timer;
+    var volume = volume | 99; //Seting to 100 when at 100 acts as mute... Using 99
+    //console.log(volume)
+
+    var fadeAudio = function () {
+      video1.YTPSetVolume(volume);
+      volume--;
+      if(volume < 0){
+        clearTimeout(timer);
+        video1.YTPPause()
+        console.log("Fade out complete")
+      }
+    };
     timer = setInterval(fadeAudio, duration*10);
 }
 
@@ -98,8 +95,15 @@ var addVideo = function (videoId){
   $('#videobox').append('<div class=\"player\" data-property=\"{videoURL:\'https://www.youtube.com/watch?v='+ videoId +'\',containment:\'self\',autoPlay:false, mute:true, startAt:0, opacity:1, showControls:false, stopMovieOnBlur:false}\"></div>')
 
   var queueLength = $('#videobox > div').length;
-  console.log(queueLength);
-  $('#videobox > div:nth-child('+ queueLength +')').YTPlayer();
+  var player = $('#videobox > div:nth-child('+ queueLength +')');
+  player.YTPlayer();
+
+  player.on("YTPReady",function(e){
+    console.log("done!")
+   var currentTime = e.time;
+       console.log(currentTime)
+   //your code goes here
+});
 }
 
 var crossfade = function(){
@@ -135,10 +139,16 @@ $(document).ready(function() {
           new Song("EyoutEHpPAU")
       ]);
 
+      self.selectedSong = ko.observable();//For draggable
+
       self.currentSong = ko.observable(new Song());
-      self.selectedSong = ko.observable();
       self.newSongId = ko.observable();
-      self.crossfadeLength = ko.observable(6);
+
+      self.inSpeed = ko.observable(3);
+      self.outSpeed = ko.observable(3);
+      self.overlap = ko.observable(6);
+      self.fadeInTimer = null;
+      self.video1Volume = ko.observable(0);
 
       self.deleteSong = function(data, event) {
           self.songs.remove(data);
@@ -153,17 +163,21 @@ $(document).ready(function() {
       };
 
       self.skip = function() {
+        self.pause();
         self.currentSong(self.songs.shift());
       };
       self.play = function() {
         console.log(self.currentSong().title())
+        //Auto skip if song is empty
         if(self.currentSong().title() === ""){
           self.currentSong(self.songs.shift());
         }
-        fadeIn();
+        self.fadeInTimer = fadeIn(self.inSpeed());
+        console.log(self.inSpeed())
       };
       self.pause = function() {
-        console.log("Pause...")
+        clearTimeout(self.fadeInTimer)//Stop the fade in.
+        fadeOut(self.outSpeed());
       };
 
       self.isSongSelected = function(song) {
