@@ -18,7 +18,7 @@ var getInfo = function(videoId, SongObj){ //SongObj param is optional
          console.log(myData);
          return myData;
        } else { //write results to SongObj
-         console.log("Adding " + SongObj.id());
+         console.log("Adding " + SongObj.id);
          SongObj.title(myData.title)
          SongObj.duration(myData.duration.pretty)
          console.log(SongObj.title());
@@ -46,50 +46,6 @@ var parseTimeStamp = function (input){
   return duration;
 }
 
-var fadeInTimers = [];
-function fadeIn(duration) {
-    //video1.YTPSetVolume(undefined); acts like mute/unmute if called twice, but also resets the volume to about 10.
-    var video1 = $('#videobox > div:nth-child(1)');
-    var timer;
-    var volume = 10; //Vol=0 or Mute followed by <10 goes to 10
-
-    var fadeAudio = function () {
-      video1.YTPSetVolume(volume);
-      volume++;
-      if(volume > 100) {
-        clearTimeout(timer);
-        console.log("Fade in complete")
-      }
-    };
-
-    video1.YTPPlay();
-    video1.YTPSetVolume(0);
-    /*
-    multiply by 1000 to get to Seconds
-    divide by numberOfVolumeBumps
-    */
-    timer = setInterval(fadeAudio, duration*1000/90);
-    return timer; //returning timer so that the fade in can be stopped.
-}
-
-function fadeOut(duration) {
-    var video1 = $('#videobox > div:nth-child(1)');
-    var timer;
-    var currentVolume = video1[0].opt.vol
-    var volume = currentVolume - 1 //Setting volume to what it already is acts as mute...
-
-    var fadeAudio = function () {
-      video1.YTPSetVolume(volume);
-      volume--;
-      if(volume < 0){
-        clearTimeout(timer);
-        video1.YTPPause()
-        console.log("Fade out complete")
-      }
-    };
-    timer = setInterval(fadeAudio, duration*10);
-}
-
 
 
 
@@ -102,14 +58,14 @@ $('#videobox > div:nth-child(1)').on("YTPData",function(e){
    //your code goes here
 });
 
-var crossfade = function(){
-  var video1 = $('#videobox > div:nth-child(1)');
-  var timeStatus = video1.YTPManageProgress()
-  var currentTime = 12//timeStatus.currentTime;
-  var totalTime = timeStatus.totalTime;
-  console.log(timeStatus);
-  addVideo(self.songs()[0]);
-};
+// var crossfade = function(){
+//   var video1 = $('#videobox > div:nth-child(1)');
+//   var timeStatus = video1.YTPManageProgress()
+//   var currentTime = 12//timeStatus.currentTime;
+//   var totalTime = timeStatus.totalTime;
+//   console.log(timeStatus);
+//   addVideo(self.songs()[0]);
+// };
 
 $(document).ready(function() {
   //Draggable operations
@@ -117,38 +73,115 @@ $(document).ready(function() {
   var Song = function(id) {
     if(id === undefined){//no arg passed => create blank song
       this.title = ko.observable("");
-      this.timeLeft = ko.observable("-:--");
     }else{
       this.title = ko.observable("!!! - Cannot load metadata for '" + id + "'");
-      this.id = ko.observable(id);
       this.duration = ko.observable("");
-      this.timeLeft = ko.observable("-:--");
-      this.durationSeconds = ko.observable(null);
+      this.id = id;
       getInfo(id, this);
     }
   }
 
+  var newVideo = function(video, title){
+    vid = [];
+    vid.video = video;
+    vid.title = title;
+    vid.id = video[0].opt.containment[0].videoID;
+    vid.totalTime = video[0].opt.containment[0].totalTime;
+    vid.timeLeft = ko.observable("--:--");
+
+    return vid;
+  }
+
   var ViewModel = function() {
       var self = this;
-      self.songs = ko.observableArray([
-          new Song("oHg5SJYRHA0"),
-          new Song("EyoutEHpPAU")
-      ]);
 
-      self.selectedSong = ko.observable();//For draggable
+      //For draggable
+      self.selectedSong = ko.observable();
+      self.songs = ko.observableArray([
+        new Song("oHg5SJYRHA0"),
+        new Song("EyoutEHpPAU"),
+        new Song("oHg5SJYRHA0"),
+        new Song("EyoutEHpPAU"),
+      ]);
+      self.deleteSong = function(data, event) {
+        self.songs.remove(data);
+      };
+
+      //Moving from song in draggable to actual video in DOM
+      self.loadedVideos = [];
+      self.loadingVideoNow = false;
+      self.loadVideo = function() {
+        //grab the new song from top of playlist
+        var newSong = self.songs.shift();
+        //add video to DOM uing ID
+        self.addVideo(newSong.id, newSong.title());
+      };
+      self.addVideo = function (videoId, title){
+        self.loadingVideoNow = true;
+        $('#videobox').append('<div class=\"player\" data-property=\"{videoURL:\'https://www.youtube.com/watch?v='+ videoId +'\',containment:\'self\',autoPlay:false, mute:true, startAt:0, opacity:1, showControls:true, stopMovieOnBlur:false}\"></div>')
+
+        var queueLength = $('#videobox > div').length;
+        var player = $('#videobox > div:nth-child('+ queueLength +')');
+        player.YTPlayer();
+
+        player.on("YTPReady",function(e){
+          self.loadedVideos.push(newVideo(player, title))
+          self.loadingVideoNow = true;
+          console.log("Video loaded! "+ self.loadedVideos)
+          var totalTime = player[0].opt.containment[0].totalTime
+          console.log(totalTime)
+        //   player.on("YTPTime",function(e){
+        //     var currentTime = e.time;
+        //     if(totalTime - currentTime - 120 === 0){
+        //       console.log("load the next song!!!!!")
+        //     }
+        //     console.log(currentTime + " (take off in " + (totalTime - currentTime - 120) + ")")
+        //  });
+      });
+    }
+
+      //Deleting video from DOM
+      self.dropVideo = function() {
+        //remove from DOM
+        $('#videobox > div:nth-child(1)').remove()
+        //remove from list
+        self.loadedVideos.shift();
+//TODO
+      };
+
+      self.fade = function(doCrossfade){
+        //Disable skip when fading to simplify things. (enable when fadeOut is complete)
+        $("#skip-button").prop( "disabled", true );
+        //Something fading in? Stop that.
+        if (self.fadeInTimer !== null) {
+          clearTimeout(self.fadeInTimer);
+          self.fadeInTimer = null;
+        }
+        /*Trasnsitino, if desired*/
+        if(!doCrossfade){
+          //Must be just a pause. Fade out. Do NOT drop video 1
+          self.fadeOut(false);
+        }else{
+          //Start fading out what ever is playing, drop video 1 when done
+          self.fadeOut(true);
+          //Fade in new song, delay if desired.
+          setTimeout(self.fadeIn(2), self.inDelay()*1000);
+        }
+      }
+
+      //General State
+      self.playing = ko.observable(false);
+      self.fadeInTimer = null;
+
 
       self.currentSong = ko.observable(new Song());
       self.newSongId = ko.observable();
 
-      self.inSpeed = ko.observable(3);
-      self.outSpeed = ko.observable(3);
-      self.overlap = ko.observable(6);
-      self.fadeInTimer = null;
-      self.video1Volume = ko.observable(0);
+      //Constants
+      self.inSpeed = ko.observable(6);
+      self.outSpeed = ko.observable(6);
+      self.inDelay = ko.observable(3);
 
-      self.deleteSong = function(data, event) {
-          self.songs.remove(data);
-      };
 
       self.addNewSong = function() {
         //grab id from var bound to input field
@@ -159,17 +192,21 @@ $(document).ready(function() {
       };
 
       self.skip = function() {
-        self.pause();
-        self.currentSong(self.songs.shift());
-        self.addVideo(self.songs()[0].id())
+        self.loadVideo()
+
       };
       self.play = function() {
-        console.log(self.currentSong().title())
-        //Auto skip if song is empty
-        if(self.currentSong().title() === ""){
-          self.skip();
+        if(self.loadedVideos.length === 0 && !self.loadingVideoNow){
+          self.loadVideo();
+        }else{
+          self.fadeIn(1);
         }
-        self.fadeInTimer = fadeIn(self.inSpeed());
+        //  console.log(self.currentSong().title())
+        //Auto skip if song is empty
+        // if(self.currentSong().title() === ""){
+        //   console.log("auto skip")
+        //   self.skip();
+        // }
       };
       self.pause = function() {
         clearTimeout(self.fadeInTimer)//Stop the fade in.
@@ -180,26 +217,61 @@ $(document).ready(function() {
          return song === self.selectedSong();
       };
 
-      self.addVideo = function (videoId){
-        $('#videobox').append('<div class=\"player\" data-property=\"{videoURL:\'https://www.youtube.com/watch?v='+ videoId +'\',containment:\'self\',autoPlay:false, mute:true, startAt:0, opacity:1, showControls:false, stopMovieOnBlur:false}\"></div>')
 
-        var queueLength = $('#videobox > div').length;
-        var player = $('#videobox > div:nth-child('+ queueLength +')');
-        player.YTPlayer();
 
-        player.on("YTPReady",function(e){
-          console.log("Video loaded!")
-          var totalTime = player[0].opt.containment[0].totalTime
-          console.log(totalTime)
-          player.on("YTPTime",function(e){
-            var currentTime = e.time;
-            if(totalTime - currentTime - 120 === 0){
-              console.log("load the next song!!!!!")
-            }
-            console.log(currentTime + " (take off in " + (totalTime - currentTime - 120) + ")")
-         });
-      });
+
+    self.fadeIn = function(videoNumber) {
+      //Note: videoNumbers are 1 indexed!!
+        var video1 = $('#videobox > div:nth-child(' + videoNumber +')');
+        //var timer;
+        var volume = 10; //Vol=0 or Mute followed by <10 goes to 10
+
+        var fadeAudio = function () {
+          video1.YTPSetVolume(volume);
+          volume++;
+          console.log("Fade in")
+          if(volume > 100) {
+            clearTimeout(self.fadeInTimer);
+            self.fadeInTimer = null;
+            console.log("Fade in complete")
+          }
+        };
+
+        video1.YTPPlay();
+        video1.YTPSetVolume(0);
+        /*
+        multiply by 1000 to get to Seconds
+        divide by numberOfVolumeBumps
+        */
+        //saving timer to a global so it can be killed
+        self.fadeInTimer = setInterval(fadeAudio, self.inSpeed()*1000/90);
     }
+
+    self.fadeOut = function(doDelete) {
+        var video1 = $('#videobox > div:nth-child(1)');
+        var timer;
+        var currentVolume = video1[0].opt.vol
+        var volume = currentVolume - 1 //Setting volume to what it already is acts as mute...
+
+        var fadeAudio = function () {
+          video1.YTPSetVolume(volume);
+          volume--;
+          if(volume < 0){
+            clearTimeout(timer);
+            video1.YTPPause();
+            if(doDelete){
+              self.dropVideo()
+              $("#skip-button").prop( "disabled", false );
+            }else{
+              $("#skip-button").prop( "disabled", false );
+            }
+            console.log("Fade out complete")
+          }
+        };
+        timer = setInterval(fadeAudio, self.outSpeed()*10);
+    }
+
+
 
 
 
@@ -218,7 +290,7 @@ $(document).ready(function() {
   };
 
   ko.applyBindings(new ViewModel());
-  $('#videobox > div:nth-child(1)').YTPlayer();
+  //$('#videobox > div:nth-child(1)').YTPlayer();
 
 
 

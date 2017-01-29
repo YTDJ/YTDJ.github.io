@@ -40,14 +40,14 @@
       </div>
       <div class="col-sm-6 col-md-5 col-lg-offset-1 col-lg-5">
         <div id="contols" class="col-xs-12 col-md-offset-1 col-lg-offset-2 col-lg-8 text-center">
-          <span class="col-md-4" data-bind="text: currentSong().timeLeft">3:10</span>
-          <!-- ko if: $root.currentSong().title() === ""  -->
-          <span data-bind="click: play" class="col-md-4 glyphicon glyphicon-play"></span>
+          <span class="col-md-4" data-bind="text: currentSong().timeLeft"></span>
+          <!-- ko if: !$root.playing() -->
+          <span id="play-button" data-bind="click: play" class="col-md-4 glyphicon glyphicon-play"></span>
           <!-- /ko -->
-          <!-- ko if: $root.currentSong().title() !== ""  -->
-          <span data-bind="click: pause" class="col-md-4 glyphicon glyphicon-pause"></span>
+          <!-- ko if: $root.playing()  -->
+          <span id="pause-button" data-bind="click: pause" class="col-md-4 glyphicon glyphicon-pause"></span>
           <!-- /ko -->
-          <span data-bind="click: skip" class="col-md-4 glyphicon glyphicon-forward"></span>
+          <span id="skip-button" data-bind="click: skip" class="col-md-4 glyphicon glyphicon-forward"></span>
         </div>
 
         <!-- http://www.knockmeout.net/2012/02/revisiting-dragging-dropping-and.html -->
@@ -67,12 +67,11 @@
               <button id="addSong" data-bind="click: addNewSong">Add Song</button>
             </form>
           </div>
-          <button id="addSong" data-bind="click: addVideo">Add Video</button>
+          <button id="addSong" data-bind="click: loadVideo">Load Song</button>
         </div>
 
       <div class="col-xs-6 col-md-7 col-lg-4 col-lg-offset-1" id="videobox">
-        <div class="player" data-property="{videoURL:'https://www.youtube.com/watch?v=oHg5SJYRHA0',containment:'self',autoPlay:false, startAt:0, opacity:1, stopMovieOnBlur:false}"></div>
-        <div class="player" data-property="{videoURL:'https://www.youtube.com/watch?v=EyoutEHpPAU',containment:'self',autoPlay:false, startAt:0, opacity:1, stopMovieOnBlur:false}"></div>
+
       </div>
     </div>
 
