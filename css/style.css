@@ -46,6 +46,10 @@ button:hover{
     100% { transform: translate(-100%, 0); }
 }
 
+#skip-button:disabled{
+  color:grey;
+}
+
 
 /*Dragable CSS*/
 /*http://www.knockmeout.net/2012/02/revisiting-dragging-dropping-and.html*/

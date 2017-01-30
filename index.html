@@ -35,12 +35,17 @@
     <div class="row">
       <div class="col-md-12">
         <div class="col-md-12 marquee">
-          <h2 data-bind="text: currentSong().title"></h2>
+          <!-- ko if: loadedVideos().length > 0 -->
+          <h2 data-bind="text: loadedVideos()[0].title"></h2>
+          <!-- /ko -->
         </div>
       </div>
+      <button id="addSong" data-bind="click: loadVideo">Load Song</button>
       <div class="col-sm-6 col-md-5 col-lg-offset-1 col-lg-5">
         <div id="contols" class="col-xs-12 col-md-offset-1 col-lg-offset-2 col-lg-8 text-center">
-          <span class="col-md-4" data-bind="text: currentSong().timeLeft"></span>
+          <!-- ko if: loadedVideos().length > 0 -->
+          <span class="col-md-4" data-bind="text: loadedVideos()[0].timeLeft">brr</span>
+          <!-- /ko -->
           <!-- ko if: !$root.playing() -->
           <span id="play-button" data-bind="click: play" class="col-md-4 glyphicon glyphicon-play"></span>
           <!-- /ko -->
@@ -67,7 +72,6 @@
               <button id="addSong" data-bind="click: addNewSong">Add Song</button>
             </form>
           </div>
-          <button id="addSong" data-bind="click: loadVideo">Load Song</button>
         </div>
 
       <div class="col-xs-6 col-md-7 col-lg-4 col-lg-offset-1" id="videobox">
