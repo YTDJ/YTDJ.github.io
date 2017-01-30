@@ -40,12 +40,8 @@
           <!-- /ko -->
         </div>
       </div>
-      <button id="addSong" data-bind="click: loadVideo">Load Song</button>
       <div class="col-sm-6 col-md-5 col-lg-offset-1 col-lg-5">
-        <div id="contols" class="col-xs-12 col-md-offset-1 col-lg-offset-2 col-lg-8 text-center">
-          <!-- ko if: loadedVideos().length > 0 -->
-          <span class="col-md-4" data-bind="text: loadedVideos()[0].timeLeft">brr</span>
-          <!-- /ko -->
+        <div id="contols" data-bind="css: { 'transitioningClass' : transitioning }" class="col-xs-12 col-md-offset-1 col-lg-offset-2 col-lg-8 text-center">
           <!-- ko if: !$root.playing() -->
           <span id="play-button" data-bind="click: play" class="col-md-4 glyphicon glyphicon-play"></span>
           <!-- /ko -->

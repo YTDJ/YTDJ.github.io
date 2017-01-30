@@ -8,7 +8,7 @@ html body {
 }
 .player{
   width: 400px;
-  height: 100px;
+  height: 300px;
 }
 
 button{
@@ -27,6 +27,10 @@ button:hover{
 
 #contols{
   font-size:1.3em;
+}
+.transitioningClass{
+  color:grey;
+  cursor:wait;
 }
 /*Marquee*/
 .marquee {

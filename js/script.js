@@ -46,26 +46,6 @@ var parseTimeStamp = function (input){
 }
 
 
-
-
-var player1 = $('#videobox > div:nth-child(1)')
-console.log("beep")
-$('#videobox > div:nth-child(1)').on("YTPData",function(e){
-   var currentTime = e.time;
-   console.log(currentTime)
-
-   //your code goes here
-});
-
-// var crossfade = function(){
-//   var video1 = $('#videobox > div:nth-child(1)');
-//   var timeStatus = video1.YTPManageProgress()
-//   var currentTime = 12//timeStatus.currentTime;
-//   var totalTime = timeStatus.totalTime;
-//   console.log(timeStatus);
-//   addVideo(self.songs()[0]);
-// };
-
 $(document).ready(function() {
   //Draggable operations
   //http://www.knockmeout.net/2012/02/revisiting-dragging-dropping-and.html
@@ -101,7 +81,6 @@ $(document).ready(function() {
         new Song("oHg5SJYRHA0"),
         new Song("EyoutEHpPAU"),
         new Song("Eco4z98nIQY"),
-        new Song("EyoutEHpPAU"),
       ]);
       self.deleteSong = function(data, event) {
         self.songs.remove(data);
@@ -109,8 +88,7 @@ $(document).ready(function() {
 
       //Moving from song in draggable to actual video in DOM
       self.loadedVideos = ko.observableArray();
-      self.skippingNow = false;
-      self.loadVideo = function() {
+      self.loadVideo = function(videoLoadedCallback) {
         if(self.songs().length <= 0){
           console.log("Cannot load video, playlist is empty");
           return; //Only load 1 vidoo at a time.
@@ -119,13 +97,13 @@ $(document).ready(function() {
           console.log("Cannot load another video, until this video is done loading.");
           return; //Only load 1 vidoo at a time.
         }
+        self.loadingVideoNow = true;
         //grab the new song from top of playlist
         var newSong = self.songs.shift();
+        //grab key data
+        var videoId = newSong.id;
+        var title = newSong.title();
         //add video to DOM uing ID
-        self.addVideo(newSong.id, newSong.title());
-      };
-      self.addVideo = function (videoId, title){
-        self.loadingVideoNow = true;
         $('#videobox').append('<div class=\"player\" data-property=\"{videoURL:\'https://www.youtube.com/watch?v='+ videoId +'\',containment:\'self\',autoPlay:false, mute:true, startAt:0, opacity:1, showControls:true, loop:false, stopMovieOnBlur:false}\"></div>')
 
         var queueLength = $('#videobox > div').length;
@@ -135,11 +113,9 @@ $(document).ready(function() {
         player.on("YTPReady",function(e){
           self.loadedVideos.push(newVideo(player, title));
           self.loadingVideoNow = false;
-
-
-
           //For some reason, the time attached to video is about 3 sec too long.
           var totalTime = player[0].opt.containment[0].totalTime - 4
+          //run the callback if one was passed
 
           //These run every second while the song is playing
           player.on("YTPTime",function(e){
@@ -148,15 +124,11 @@ $(document).ready(function() {
             //Auto fadeX
             if(totalTime - currentTime - self.crossfadeDuration() - self.bufferDuration() === 0){
               console.log("Autoloading next song.")
-              self.loadVideo()
+              self.loadVideo(function(){self.skip()})
             }
-            if(totalTime - currentTime - self.crossfadeDuration() === 0){
-              self.skip()
-            }
-
-
-            console.log(totalTime +" - " + currentTime + " - " + self.crossfadeDuration() +" = " + (totalTime - currentTime - self.crossfadeDuration()))
+          //  console.log(totalTime +" - " + currentTime + " - " + self.crossfadeDuration() +" = " + (totalTime - currentTime - self.crossfadeDuration()))
          });
+         if(videoLoadedCallback) videoLoadedCallback();
       });
     }
     self.fadeIn = function(videoNumber) {
@@ -167,18 +139,20 @@ $(document).ready(function() {
         var volume = 10; //Vol=0 or Mute followed by <10 goes to 10
 
         var fadeAudio = function () {
+          video1.YTPPlay();
           video1.YTPSetVolume(volume);
           volume++;
           console.log("Fade in")
           if(volume > 100) {
             clearTimeout(self.fadeInTimer);
             self.fadeInTimer = null;
+            self.transitioning(false);
             console.log("Fade in complete")
           }
         };
 
-        video1.YTPPlay();
         video1.YTPSetVolume(0);
+        video1.YTPPlay();
         /*
         multiply by 1000 to get to Seconds
         divide by numberOfVolumeBumps
@@ -202,6 +176,7 @@ $(document).ready(function() {
             if(doDelete){
               self.dropVideo()
             }
+            self.transitioning(false);
             console.log("Fade out complete")
           }
         };
@@ -217,25 +192,8 @@ $(document).ready(function() {
         self.loadedVideos.shift();
       };
 
-      self.state = ko.observable("s"); //s_top, p_lay or t_ransition
-      self.transitionInProgress = ko.observable(false);
-      self.masterFade = function(mode){
-        self.state("t");
-        if(mode === "fadeOut"){
-          //fade out
-          self.state("s");
-        }else if(mode === "fadeIn"){
-          //load video1
-          //fade in
-          self.state("p");
-        }else if(mode === "fadeX"){
-          //load video1
-          //fade out
-          //fade in
-          self.state("p");
+      self.fadex = function(){self.fade(true)}
 
-        }
-      }
       self.fade = function(doCrossfade){
         //Something fading in? Stop that.
         if (self.fadeInTimer !== null) {
@@ -257,8 +215,8 @@ $(document).ready(function() {
 
       //General State
       self.playing = ko.observable(false);
+      self.transitioning = ko.observable(false);
       self.fadeInTimer = null;
-      self.skippingNow = false;
 
 
       self.currentSong = ko.observable(new Song());
@@ -270,8 +228,8 @@ $(document).ready(function() {
       //crossfadeDuration = 0 => fade out completely, then fade in completely
       //crossfadeDuration = outSpeed => start fading out/in at the same time
       //crossfadeDuration > outspeed => clip end of song that is playing
-      self.crossfadeDuration = ko.observable(16);
-      self.bufferDuration = ko.observable(3);
+      self.crossfadeDuration = ko.observable(self.outSpeed());
+      self.bufferDuration = ko.observable(3);//guess for how long the videos are taking to load
 
 
       self.addNewSong = function() {
@@ -282,27 +240,36 @@ $(document).ready(function() {
           this.newSongId("");
       };
       self.skip = function() {
-        //Don't do anything if no song is playing
-        if(!self.playing()) return;
+        if(self.transitioning())return;
+        self.transitioning(true);
+
+        if(!self.playing()){
+          self.dropVideo();
+          self.loadVideo(function(){self.transitioning(false)});
+        }
+
         //crossfade if a song is ready, else load, then crossfade
         if(self.loadedVideos().length > 1){
-          self.fade(true);
+          self.fadex();
         }else{
-          self.loadVideo();
-          console.log(1000*self.bufferDuration())
-          var a = setTimeout(console.log("honk"), 3000);
-          var b = setTimeout(self.fade(true), 1000*self.bufferDuration());
+          self.loadVideo(function (){self.fadex()});
         }
       };
       self.play = function() {
+        if(self.transitioning())return;
+        self.transitioning(true);
+
         if(self.loadedVideos().length === 0){
-          self.loadVideo();
+          self.loadVideo(function(){self.fadeIn(1)});
         }else{
           self.fadeIn(1);
         }
       };
       self.pause = function() {
-        self.fade(false);
+        if(self.transitioning())return;
+        self.transitioning(true);
+
+        self.fade();
       };
 
       self.isSongSelected = function(song) {
@@ -326,24 +293,4 @@ $(document).ready(function() {
   };
 
   ko.applyBindings(new ViewModel());
-  //$('#videobox > div:nth-child(1)').YTPlayer();
-
-
-
-
-
-
-
-    //do jQuery stuff when DOM is ready
-    //jQuery.mbYTPlayer.apiKey = "" //give key to the library
-
-//    $('#videobox > div:nth-child(2)').YTPlayer();
-  ///  getInfo("oHg5SJYRHA0");
-//    addVideo('EyoutEHpPAU');
-
-
-//addVideo("EyoutEHpPAU");
-//getInfo("EyoutEHpPAU");
-
-
 });
