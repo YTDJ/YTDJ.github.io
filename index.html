@@ -21,7 +21,6 @@
   <script type='text/javascript' src="js/knockout-sortable.js"></script>
   <!-- My Files -->
   <link rel="stylesheet" href="css/style.css">
-  <script src="js/key.js"></script>
   <script src="js/script.js"></script>
 
 </head>
@@ -58,7 +57,6 @@
             <div data-bind="attr:{href:id}, text: title, click: $root.selectedSong"
             class="col-lg-8 col-xs-9 text-left"></div>
             <div class="col-lg-4 col-xs-3 text-right">
-              <span data-bind="text: duration"></span>
               <span data-bind="click: $root.deleteSong" class="glyphicon glyphicon-remove">
               </div>
             </div>
@@ -70,7 +68,7 @@
             </form>
           </div>
         </div>
-        
+
       <div class="col-xs-6 col-md-7 col-lg-4 col-lg-offset-1" id="settings">
         <div class="row">
           <div class="col-md-4">

@@ -1,80 +1,45 @@
 
-var getInfo = function(videoId, SongObj){ //SongObj param is optional
-  $.ajax({
-     url: "https://www.googleapis.com/youtube/v3/videos?id="+ videoId +"&key=" + key + "&part=snippet,contentDetails&fields=items(id,snippet,contentDetails)",
-     data: {
-        format: 'json'
-     },
-     error: function() {
-        $('#info').html('<p>An error has occurred</p>');
-     },
-     dataType: 'jsonp',
-     success: function(data) {
-       var myData = {};
-       myData.id = data.items[0].id;
-       myData.title = data.items[0].snippet.title;
-       myData.duration = parseTimeStamp(data.items[0].contentDetails.duration);
-       if(SongObj === undefined){ //if no SongObj was passed
-         console.log(myData);
-         return myData;
-       } else { //write results to SongObj
-         console.log("Adding " + SongObj.id);
-         SongObj.title(myData.title)
-         SongObj.duration(myData.duration.pretty)
-       }
-     },
-     type: 'GET'
-  });
-}
 
-var parseTimeStamp = function (input){
-  var reptms = /^PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?$/;
-  var duration = {}
 
-  if (reptms.test(input)) {
-    var matches = reptms.exec(input);
-    duration.hours = (matches[1])?Number(matches[1]):0;
-    duration.minutes = (matches[2])?Number(matches[2]):0;
-    duration.seconds = (matches[3])?Number(matches[3]):0;
-    duration.totalseconds = duration.hours * 3600  + duration.minutes * 60 + duration.seconds;
-
-    duration.pretty = "";
-    if(duration.hours){duration.pretty += duration.hours + ":"}
-    duration.pretty += duration.minutes + ":"+ duration.seconds;
-  }
-  return duration;
-}
 
 
 $(document).ready(function() {
   //Draggable operations
   //http://www.knockmeout.net/2012/02/revisiting-dragging-dropping-and.html
-  var Song = function(id) {
-    if(id === undefined){//no arg passed => create blank song
-      this.title = ko.observable("");
-    }else{
-      this.title = ko.observable("!!! - Cannot load metadata for '" + id + "'");
-      this.duration = ko.observable("");
-      this.id = id;
-      getInfo(id, this);
-    }
-  }
-
-  var newVideo = function(video, title){
-    var vid = {};
-    vid.video = video;
-    vid.title = title;
-    vid.id = video[0].opt.containment[0].videoID;
-    vid.totalTime = video[0].opt.containment[0].totalTime;
-    vid.timeLeft = ko.observable("--:--");
-    return vid;
-  }
 
 
 
   var ViewModel = function() {
       var self = this;
 
+      var Song = function(id) {
+        this.title = ko.observable("!!! - Cannot load metadata for '" + id + "'");
+        this.id = id;
+        getTitle(id, this);
+      }
+      var getTitle = function(videoId, SongObj){
+        var url = 'https://www.youtube.com/watch?v=' + videoId;
+
+        $.getJSON('https://noembed.com/embed',
+        {format: 'json', url: url}, function (data) {
+          if(data.error){
+            console.log(videoId + ' is not a thing')
+          }else{
+            SongObj.title(data.title)
+            console.log("Adding " + data.title);
+          }
+        })
+      }
+
+      var newVideo = function(video, title){
+        var vid = {};
+        vid.video = video;
+        vid.title = title;
+        vid.id = video[0].opt.containment[0].videoID;
+        vid.totalTime = video[0].opt.containment[0].totalTime;
+        vid.timeLeft = ko.observable("--:--");
+        return vid;
+      }
       //For draggable
       self.selectedSong = ko.observable();
       self.songs = ko.observableArray([
@@ -83,6 +48,24 @@ $(document).ready(function() {
         new Song("Eco4z98nIQY"),
         new Song("U9t-slLl30E"),
       ]);
+      self.addNewSong = function() {
+        //if there is nothing there, just quit.
+        if(!this.newSongId()) return;
+
+        var song = new Song(this.newSongId());
+        self.selectedSong(song);
+        self.songs.push(song);
+        this.newSongId("");
+      };
+      self.addNewSong = function() {
+        //if there is nothing there, just quit.
+        if(!this.newSongId()) return;
+
+        var song = new Song(this.newSongId());
+        self.selectedSong(song);
+        self.songs.push(song);
+        this.newSongId("");
+      };
       self.deleteSong = function(data, event) {
         self.songs.remove(data);
       };
@@ -233,13 +216,7 @@ $(document).ready(function() {
       self.bufferDuration = ko.observable(3);//guess for how long the videos are taking to load
 
 
-      self.addNewSong = function() {
-        //grab id from var bound to input field
-          var song = new Song(this.newSongId());
-          self.selectedSong(song);
-          self.songs.push(song);
-          this.newSongId("");
-      };
+
       self.skip = function() {
         if(self.transitioning())return;
         self.transitioning(true);
