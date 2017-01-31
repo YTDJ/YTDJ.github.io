@@ -81,6 +81,7 @@ $(document).ready(function() {
         new Song("oHg5SJYRHA0"),
         new Song("EyoutEHpPAU"),
         new Song("Eco4z98nIQY"),
+        new Song("U9t-slLl30E"),
       ]);
       self.deleteSong = function(data, event) {
         self.songs.remove(data);
