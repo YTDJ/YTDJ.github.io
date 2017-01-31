@@ -50,8 +50,11 @@ button:hover{
     100% { transform: translate(-100%, 0); }
 }
 
-#skip-button:disabled{
-  color:grey;
+#settings input{
+  color:orange;
+  background-color: black;
+  outline: none;
+  border: none;
 }
 
 

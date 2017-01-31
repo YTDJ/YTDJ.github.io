@@ -49,6 +49,7 @@
           <span id="pause-button" data-bind="click: pause" class="col-md-4 glyphicon glyphicon-pause"></span>
           <!-- /ko -->
           <span id="skip-button" data-bind="click: skip" class="col-md-4 glyphicon glyphicon-forward"></span>
+          <span id="settings-button" onclick="$('#settings').toggle()" class="col-md-4 glyphicon glyphicon-cog"></span>
         </div>
 
         <!-- http://www.knockmeout.net/2012/02/revisiting-dragging-dropping-and.html -->
@@ -69,10 +70,23 @@
             </form>
           </div>
         </div>
-
-      <div class="col-xs-6 col-md-7 col-lg-4 col-lg-offset-1" id="videobox">
+      <div class="col-xs-6 col-md-7 col-lg-4 col-lg-offset-1" id="settings">
+        <div class="row">
+          <div class="col-md-4">
+            In:<input data-bind="value: inSpeed" label="In Speed" type="number" max="20" min="0" />
+          </div>
+          <div class="col-md-4">
+            Out: <input data-bind="value: outSpeed" label="Out Speed" type="number" max="20" min="0"/>
+          </div>
+          <div class="col-md-4">
+            Out: <input data-bind="value: crossfadeDuration" label="Out Speed" type="number" max="20" min="0"/>
+          </div>
+        </div>
 
       </div>
+
+
+      <div class="col-xs-6 col-md-7 col-lg-4 col-lg-offset-1" id="videobox"></div>
     </div>
 
 
