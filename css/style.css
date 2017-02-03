@@ -6,11 +6,13 @@ html body {
   background: linear-gradient(to right, black , #633115); /* Standard syntax */
   color: white;
 }
+
+/*Player*/
 .player{
   width: 400px;
   height: 300px;
 }
-
+/*Controls*/
 button{
   background: #D9950E;
   color: #140A00;
@@ -32,7 +34,8 @@ button:hover{
   color:grey;
   cursor:wait;
 }
-/*Marquee*/
+
+/*Scrolling marquee for now playing*/
 .marquee {
     white-space: nowrap;
     overflow: hidden;
@@ -50,11 +53,44 @@ button:hover{
     100% { transform: translate(-100%, 0); }
 }
 
+/*Setting Area*/
+#settings {
+  padding:1em;
+  background-color:black;
+  border-radius: .5em;
+}
+
 #settings input{
   color:orange;
-  background-color: black;
+  background-color: #140A00;
   outline: none;
   border: none;
+}
+
+#exportPlaylist, #importPlaylist{
+  margin-top: .5em;
+}
+
+/*Export pop up*/
+.dialog{
+  padding:3em;
+  background-color:black;
+  width: 50%;
+}
+.ui-dialog-titlebar{
+  padding:.5em;
+  background-color:black;
+  font-size: 1.2em;
+}
+.ui-dialog-titlebar-close{
+  float: right;
+}
+.dialog textarea{
+  height:20em;
+  width:15em;
+  overflow-y: scroll;
+  color: white;
+  background-color: #140A00;
 }
 
 

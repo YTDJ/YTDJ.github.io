@@ -32,24 +32,48 @@
     </div>
 
     <div class="row">
-      <div class="col-md-12">
         <div class="col-md-12 marquee">
           <!-- ko if: loadedVideos().length > 0 -->
           <h2 data-bind="text: loadedVideos()[0].title"></h2>
           <!-- /ko -->
         </div>
-      </div>
+    </div>
+
       <div class="col-sm-6 col-md-5 col-lg-offset-1 col-lg-5">
-        <div id="contols" data-bind="css: { 'transitioningClass' : transitioning }" class="col-xs-12 col-md-offset-1 col-lg-offset-2 col-lg-8 text-center">
-          <!-- ko if: !$root.playing() -->
-          <span id="play-button" data-bind="click: play" class="col-md-4 glyphicon glyphicon-play"></span>
-          <!-- /ko -->
-          <!-- ko if: $root.playing()  -->
-          <span id="pause-button" data-bind="click: pause" class="col-md-4 glyphicon glyphicon-pause"></span>
-          <!-- /ko -->
-          <span id="skip-button" data-bind="click: skip" class="col-md-4 glyphicon glyphicon-forward"></span>
-          <span id="settings-button" onclick="$('#settings').toggle()" class="col-md-4 glyphicon glyphicon-cog"></span>
+        <div class="row">
+          <div id="contols" data-bind="css: { 'transitioningClass' : transitioning }" class="col-xs-12 col-md-offset-1 col-lg-offset-2 col-lg-8 text-center">
+            <!-- ko if: !$root.playing() -->
+            <span id="play-button" data-bind="click: play" class="col-md-4 glyphicon glyphicon-play"></span>
+            <!-- /ko -->
+            <!-- ko if: $root.playing()  -->
+            <span id="pause-button" data-bind="click: pause" class="col-md-4 glyphicon glyphicon-pause"></span>
+            <!-- /ko -->
+            <span id="skip-button" data-bind="click: skip" class="col-md-4 glyphicon glyphicon-forward"></span>
+            <span id="settings-button" onclick="$('#settings').toggle()" class="col-md-4 glyphicon glyphicon-cog"></span>
+            <br>
+          </div>
         </div>
+
+        <div id="settings" >
+            <div class="form-horizontal">
+              <div class="form-group">
+                <label class="col-xs-5 col-xs-offset-2" for="inSpeed">In Speed</label>
+                <input class="col-xs-3" data-bind="value: inSpeed" type="number" max="20" min="0" />
+              </div>
+              <div class="form-group">
+                <label class="col-xs-5 col-xs-offset-2" for="outSpeed">Out Speed</label>
+                <input class="col-xs-3" data-bind="value: outSpeed" type="number" max="20" min="0"/>
+              </div>
+              <div class="form-group">
+                <label class="col-xs-5 col-xs-offset-2" for="outSpeed">Crossfade Delay</label>
+                <input class="col-xs-3" data-bind="value: crossfadeDuration" id="crossfadeDuration" type="number" max="20" min="0"/>
+              </div>
+            </div>
+              <div class="row">
+                <button class="col-xs-4 col-xs-offset-1 btn" id="exportPlaylist" data-bind="click: exportPlaylist">Export Playlist</button>
+                <button class="col-xs-4 col-xs-offset-2 btn" id="importPlaylist" data-bind="click: importPlaylist">Import Playlist</button>
+              </div>
+          </div>
 
         <!-- http://www.knockmeout.net/2012/02/revisiting-dragging-dropping-and.html -->
         <div class="col-xs-12" data-bind="sortable: songs">
@@ -64,29 +88,39 @@
           <div class="col-xs-12 text-center">
             <form id="addSong" class="item">
               <input data-bind="value: newSongId" placeholder="Enter a video id from YouTube URL..."/>
-              <button id="addSong" data-bind="click: addNewSong">Add Song</button>
+              <button id="addSong" class="btn" data-bind="click: addNewSong">Add Song</button>
             </form>
           </div>
         </div>
 
-      <div class="col-xs-6 col-md-7 col-lg-4 col-lg-offset-1" id="settings">
-        <div class="row">
-          <div class="col-md-4">
-            In:<input data-bind="value: inSpeed" label="In Speed" type="number" max="20" min="0" />
-          </div>
-          <div class="col-md-4">
-            Out: <input data-bind="value: outSpeed" label="Out Speed" type="number" max="20" min="0"/>
-          </div>
-          <div class="col-md-4">
-            Crossfade duration: <input data-bind="value: crossfadeDuration" label="Out Speed" type="number" max="20" min="0"/>
-          </div>
-        </div>
 
+        <div class="col-sm-6 col-md-7 col-lg-4 col-lg-offset-1" id="videobox"></div>
+
+
+
+
+      </div><!-- close row -->
+
+
+      <div id="exportDialog" class="dialog" title="Export Playlist" style="display:none;">
+        <p>Copy and paste the playlist data somewhere safe. When you come back, it can be quickly imported.</p>
+        <textarea onclick="this.focus();this.select()" readonly="readonly"></textarea>
+      </div>
+      <div id="importDialog" class="dialog" title="Import Playlist" style="display:none;">
+        <p>Paste and import!</p>
+        <textarea></textarea>
+        <div class="text-center">
+          <div class="checkbox">
+            <label>
+              <input type="checkbox" checked="checked" id="clearPlaylist"> Clear current playlist
+            </label>
+          </div>
+          <button type="button" class="btn" data-bind="click: importNow">Import</button>
+        </div>
       </div>
 
 
-      <div class="col-xs-6 col-md-7 col-lg-4 col-lg-offset-1" id="videobox"></div>
-    </div>
+    </div> <!-- close container -->
 
 
 

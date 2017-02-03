@@ -13,7 +13,7 @@ $(document).ready(function() {
       var self = this;
 
       var Song = function(id) {
-        this.title = ko.observable("!!! - Cannot load metadata for '" + id + "'");
+        this.title = ko.observable("! - Cannot load '" + id + "'");
         this.id = id;
         getTitle(id, this);
       }
@@ -254,6 +254,27 @@ $(document).ready(function() {
          return song === self.selectedSong();
       };
 
+      self.exportPlaylist = function() {
+        var songs = ko.toJSON(self.songs())
+        $("#exportDialog").dialog();
+        $("#exportDialog > textarea").html(songs)
+      };
+      self.importPlaylist = function() {
+        $("#importDialog > textarea").val("");
+        $("#importDialog").dialog();
+      };
+      self.importNow = function() {
+        if($( "#clearPlaylist" ).prop('checked')){
+          self.songs.removeAll();
+        }
+        var rawInput = $( "#importDialog > textarea" ).val();
+        $("#importDialog").dialog('close');
+        var input = JSON.parse(rawInput);
+        for (var i = 0; i < input.length; i++) {
+          console.log(input[i].id)
+          self.songs.push(new Song (input[i].id))
+        }
+      };
 
 
   };
