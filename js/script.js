@@ -266,9 +266,8 @@ $(document).ready(function() {
       self.importNow = function() {
         if($( "#clearPlaylist" ).prop('checked')){
           self.songs.removeAll();
-        }
       }
-      var rawInput = $( "#importDialog > textarea" ).val();
+        var rawInput = $( "#importDialog > textarea" ).val();
         $("#importDialog").dialog('close');
         var input = JSON.parse(rawInput);
         for (var i = 0; i < input.length; i++) {
