@@ -19,6 +19,8 @@
 
   <script type='text/javascript' src="js/knockout-3.4.0.js"></script>
   <script type='text/javascript' src="js/knockout-sortable.js"></script>
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans|Roboto+Condensed" rel="stylesheet">
   <!-- My Files -->
   <link rel="stylesheet" href="css/style.css">
   <script src="js/script.js"></script>
@@ -54,7 +56,7 @@
           </div>
         </div>
 
-        <div id="settings" >
+        <div id="settings" style="display:none">
             <div class="form-horizontal">
               <div class="form-group">
                 <label class="col-xs-5 col-xs-offset-2" for="inSpeed">In Speed</label>
@@ -83,18 +85,20 @@
         <div class="col-xs-12" data-bind="sortable: songs">
           <div class="item row">
             <div data-bind="attr:{href:id}, text: title, click: $root.selectedSong"
-            class="col-lg-8 col-xs-9 text-left"></div>
-            <div class="col-lg-4 col-xs-3 text-right">
+            class="col-xs-11 text-left"></div>
+            <div class="text-right">
               <span data-bind="click: $root.deleteSong" class="glyphicon glyphicon-remove">
               </div>
             </div>
           </div>
           <div class="col-xs-12 text-center">
-            <form id="addSong" class="item">
-              <div class="col-xs-12">
-              <input data-bind="value: newSongId" placeholder="Enter a video id from YouTube URL..."/>
-              </div>
-              <button id="addSong" class="btn" data-bind="click: addNewSong">Add Song</button>
+
+            <form class="addSong input-group">
+              <input id="addSongInput" type="text" class="form-control" data-bind="value: newSongId" placeholder="Enter a video ID from YouTube URL...">
+              <span id="addSongSpan" class="input-group-addon" data-bind="click: addNewSong">
+                <span id="addSongPlus" class="glyphicon glyphicon-plus"></span></span>
+              <!-- Button duplicates logic in span. I enables ENTER key adds. -->
+              <button style="display:none" data-bind="click: addNewSong"></button>
             </form>
           </div>
         </div>

@@ -1,10 +1,11 @@
 html body {
-  background: black; /* For browsers that do not support gradients */
-  background: -webkit-linear-gradient(left, black , #633115); /* For Safari 5.1 to 6.0 */
-  background: -o-linear-gradient(right, black, #633115); /* For Opera 11.1 to 12.0 */
-  background: -moz-linear-gradient(right, black, #633115); /* For Firefox 3.6 to 15 */
-  background: linear-gradient(to right, black , #633115); /* Standard syntax */
+  font-family: 'Roboto Condensed', sans-serif;
+  background: black;
   color: white;
+}
+
+h1, h2{
+  font-family: 'Open Sans', sans-serif;
 }
 
 /*Player*/
@@ -14,7 +15,6 @@ html body {
 }
 /*Controls*/
 button{
-  background: #D9950E;
   color: #140A00;
   outline: none;
   border: none;
@@ -53,11 +53,15 @@ button:hover{
     100% { transform: translate(-100%, 0); }
 }
 
+
 /*Setting Area*/
 #settings {
+  margin-top:1em;
   padding:1em;
   background-color:black;
   border-radius: .5em;
+  border-style: solid;
+  border-color: orange;
 }
 
 #settings input{
@@ -70,6 +74,38 @@ button:hover{
 #exportPlaylist, #importPlaylist{
   margin-top: .5em;
 }
+
+/*addSong Area*/
+.addSong{
+  margin-top: 1em;
+}
+.addSong #addSongInput{
+  background-color: black;
+  color:orange;
+
+  outline: none;
+   border: none;
+   -webkit-box-shadow: none;
+   -moz-box-shadow: none;
+   box-shadow: none;
+   border-color: orange;
+   border-radius: 2em;
+   border-top: solid;
+}
+.addSong #addSongSpan{
+  color: orange;
+  background-color: black;
+  border: none;
+  border-radius: 2em;
+  border-top:solid;
+}
+.addSong #addSongPlus{
+  color: orange;
+}
+.addSong span:hover{
+
+}
+
 
 /*Export pop up*/
 .dialog{
@@ -107,20 +143,20 @@ button:hover{
     width: 100%;
     color:orange;
     background-color: black;
+    border-width: 1px;
+    border-radius: .5em;
+    border-style: solid;
+    border-color: orange;
     cursor: move;
 }
 .item .glyphicon-remove{
       cursor: default;
+      padding-right: .5em;
 }
 a {
     color:orange;
 }
-.item input {
-    width: 100%;
-    background: #140A00;
-    outline: none;
-    border: none;
-}
+
 .item *:focus {outline: none;}
 
 
