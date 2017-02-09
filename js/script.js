@@ -26,7 +26,7 @@ $(document).ready(function() {
             console.log(videoId + ' is not a thing')
           }else{
             SongObj.title(data.title)
-            console.log("Adding " + data.title);
+            console.log("Adding " + videoId +": "+ data.title);
           }
         })
       }
@@ -40,14 +40,17 @@ $(document).ready(function() {
         vid.timeLeft = ko.observable("--:--");
         return vid;
       }
+      var writeToStorage = function(){
+        var songs = ko.toJSON(self.songs())
+        //alwayse write everything to storage. If 'enabled' then it is acually used.
+        if (typeof(Storage) !== "undefined") {
+          localStorage.setItem("playlist", songs);
+        }
+      }
       //For draggable
       self.selectedSong = ko.observable();
-      self.songs = ko.observableArray([
-        new Song("oHg5SJYRHA0"),
-        new Song("EyoutEHpPAU"),
-        new Song("Eco4z98nIQY"),
-        new Song("U9t-slLl30E"),
-      ]);
+      self.songs = ko.observableArray([]);
+      self.songs.subscribe(function(){writeToStorage()});
       self.addNewSong = function() {
         //if there is nothing there, just quit.
         if(!this.newSongId()) return;
@@ -88,7 +91,7 @@ $(document).ready(function() {
         var videoId = newSong.id;
         var title = newSong.title();
         //add video to DOM uing ID
-        $('#videobox').append('<div class=\"player\" data-property=\"{videoURL:\'https://www.youtube.com/watch?v='+ videoId +'\',containment:\'self\',autoPlay:false, mute:true, startAt:0, opacity:1, showControls:true, loop:false, stopMovieOnBlur:false}\"></div>')
+        $('#videobox').append('<div class=\"player\" data-property=\"{videoURL:\'https://www.youtube.com/watch?v='+ videoId +'\',containment:\'self\',autoPlay:false, startAt:0, opacity:1, showControls:false, loop:false, stopMovieOnBlur:false}\"></div>')
 
         var queueLength = $('#videobox > div').length;
         var player = $('#videobox > div:nth-child('+ queueLength +')');
@@ -237,6 +240,8 @@ $(document).ready(function() {
         if(self.transitioning())return;
         self.transitioning(true);
 
+        $('#settings').hide()
+
         if(self.loadedVideos().length === 0){
           self.loadVideo(function(){self.fadeIn(1)});
         }else{
@@ -256,6 +261,9 @@ $(document).ready(function() {
 
       self.exportPlaylist = function() {
         var songs = ko.toJSON(self.songs())
+        //console.log(JSON.stringify(songs, null, 2))
+        songs = JSON.parse(songs)
+        songs = JSON.stringify(songs, null, 2);
         $("#exportDialog").dialog();
         $("#exportDialog > textarea").html(songs)
       };
@@ -276,7 +284,39 @@ $(document).ready(function() {
         }
       };
 
+      if (typeof(Storage) !== "undefined") {
+        //init cacheEnabled checkbox to stored value
+        if(localStorage.getItem("cacheEnabled") === "true"){
+          $('#cacheEnabled').prop('checked', true)
+        } else{
+          $('#cacheEnabled').prop('checked', false)
+        }
 
+        //wire up the cacheEnabled checkbox for future changes
+        $('#cacheEnabled').change(function(){
+          if($('#cacheEnabled').prop('checked')){
+            localStorage.setItem("cacheEnabled", "true");
+          } else{
+            localStorage.setItem("cacheEnabled", "false");
+            localStorage.setItem("playlist", []);
+          }
+        })
+
+        //load up cached playlist | default songs
+        if(localStorage.getItem("cacheEnabled") === "true"){
+          console.log("Cache enabled, loading cached playlist")
+            var cachedPlaylist = JSON.parse(localStorage.getItem("playlist"));
+            for (var i = 0; i < cachedPlaylist.length; i++) {
+              self.songs.push(new Song (cachedPlaylist[i].id))
+            }
+
+        }else{
+          self.songs.push(new Song("oHg5SJYRHA0"))
+          self.songs.push(new Song("EyoutEHpPAU"))
+          self.songs.push(new Song("Eco4z98nIQY"))
+          self.songs.push(new Song("U9t-slLl30E"))
+        }
+      }
   };
 
   //control visibility, give element focus, and select the contents (in order)

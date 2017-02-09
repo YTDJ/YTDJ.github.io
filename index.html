@@ -68,6 +68,10 @@
                 <label class="col-xs-5 col-xs-offset-2" for="outSpeed">Crossfade Delay</label>
                 <input class="col-xs-3" data-bind="value: crossfadeDuration" id="crossfadeDuration" type="number" max="20" min="0"/>
               </div>
+              <div class="form-group">
+                <label class="col-xs-5 col-xs-offset-2" for="cacheEnabled">Save Playlist</label>
+                <input type="checkbox" id="cacheEnabled">
+              </div>
             </div>
               <div class="row">
                 <button class="col-xs-4 col-xs-offset-1 btn" id="exportPlaylist" data-bind="click: exportPlaylist">Export Playlist</button>
@@ -87,7 +91,9 @@
           </div>
           <div class="col-xs-12 text-center">
             <form id="addSong" class="item">
+              <div class="col-xs-12">
               <input data-bind="value: newSongId" placeholder="Enter a video id from YouTube URL..."/>
+              </div>
               <button id="addSong" class="btn" data-bind="click: addNewSong">Add Song</button>
             </form>
           </div>
