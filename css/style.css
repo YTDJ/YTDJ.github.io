@@ -75,6 +75,12 @@ button:hover{
   margin-top: .5em;
 }
 
+.popover{
+  color:black;
+  width:25em;
+}
+
+
 /*addSong Area*/
 .addSong{
   margin-top: 1em;

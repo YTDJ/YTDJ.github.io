@@ -6,7 +6,7 @@
 $(document).ready(function() {
   //Draggable operations
   //http://www.knockmeout.net/2012/02/revisiting-dragging-dropping-and.html
-
+$('#cachingPopover').popover()
 
 
   var ViewModel = function() {

@@ -7,8 +7,6 @@
   <title>Youtube DJ</title>
   <meta name="description" content="Youtube DJ - DJ like a pro!">
 
-  <!-- Bootstrap -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
   <!-- YT Player (including jquery) -->
   <link href="YTPlayer/jquery.mb.YTPlayer.min.css" media="all" rel="stylesheet" type="text/css">
   <script type="text/javascript" src="js/jquery.min.js"></script>
@@ -19,6 +17,9 @@
 
   <script type='text/javascript' src="js/knockout-3.4.0.js"></script>
   <script type='text/javascript' src="js/knockout-sortable.js"></script>
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
   <!-- Google Font -->
   <link href="https://fonts.googleapis.com/css?family=Open+Sans|Roboto+Condensed" rel="stylesheet">
   <!-- Google Anaylitcs -->
@@ -81,7 +82,16 @@
                 <input class="col-xs-3" data-bind="value: crossfadeDuration" id="crossfadeDuration" type="number" max="20" min="0"/>
               </div>
               <div class="form-group">
-                <label class="col-xs-5 col-xs-offset-2" for="cacheEnabled">Save Playlist</label>
+                <label class="col-xs-5 col-xs-offset-2" for="cacheEnabled">Save Playlist (
+                  <a id="cachingPopover" data-toggle="popover" data-placement="top"
+                  title="Playlist Caching"
+                  data-content="Save Playlist functionality enables the browser
+                    to keep a copy of your playlist in local storage. When enabled,
+                     a backup of the playlist is taken on every playlist change
+                     and that backup will be used to automatically load songs on page refresh.
+                     Note that caching may affect performance if playlist is large.">
+                  ?</a>)
+                </label>
                 <input type="checkbox" id="cacheEnabled">
               </div>
             </div>
