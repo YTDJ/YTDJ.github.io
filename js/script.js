@@ -42,9 +42,10 @@ $(document).ready(function() {
       }
       var writeToStorage = function(){
         var songs = ko.toJSON(self.songs())
-        //alwayse write everything to storage. If 'enabled' then it is acually used.
         if (typeof(Storage) !== "undefined") {
-          localStorage.setItem("playlist", songs);
+          if(localStorage.getItem("cacheEnabled") === "true"){
+            localStorage.setItem("playlist", songs);
+          }
         }
       }
       //For draggable
@@ -296,9 +297,9 @@ $(document).ready(function() {
         $('#cacheEnabled').change(function(){
           if($('#cacheEnabled').prop('checked')){
             localStorage.setItem("cacheEnabled", "true");
+            writeToStorage()
           } else{
             localStorage.setItem("cacheEnabled", "false");
-            localStorage.setItem("playlist", []);
           }
         })
 
