@@ -41,7 +41,8 @@ $(document).ready(function() {
         return vid;
       }
       var writeToStorage = function(){
-        var songs = ko.toJSON(self.songs())
+        //Write only IDs to storage
+        var songs = JSON.stringify(self.songs())
         if (typeof(Storage) !== "undefined") {
           if(localStorage.getItem("cacheEnabled") === "true"){
             localStorage.setItem("playlist", songs);
