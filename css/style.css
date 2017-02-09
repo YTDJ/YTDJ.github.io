@@ -109,6 +109,11 @@ button:hover{
 
 
 /*Export pop up*/
+.ui-dialog{
+  z-index: 1000;
+  border: solid;
+  border-width: 1px;
+}
 .dialog{
   padding:3em;
   background-color:black;

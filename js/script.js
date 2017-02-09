@@ -91,7 +91,7 @@ $(document).ready(function() {
         var videoId = newSong.id;
         var title = newSong.title();
         //add video to DOM uing ID
-        $('#videobox').append('<div class=\"player\" data-property=\"{videoURL:\'https://www.youtube.com/watch?v='+ videoId +'\',containment:\'self\',autoPlay:false, startAt:0, opacity:1, showControls:false, loop:false, stopMovieOnBlur:false}\"></div>')
+        $('#videobox').append('<div class=\"player\" data-property=\"{videoURL:\'https://www.youtube.com/watch?v='+ videoId +'\',containment:\'self\',autoPlay:false, startAt:0, opacity:1, showControls:true, loop:false, stopMovieOnBlur:false}\"></div>')
 
         var queueLength = $('#videobox > div').length;
         var player = $('#videobox > div:nth-child('+ queueLength +')');
