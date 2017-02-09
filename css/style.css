@@ -82,6 +82,7 @@ button:hover{
 .addSong #addSongInput{
   background-color: black;
   color:orange;
+  z-index: -1;
 
   outline: none;
    border: none;
