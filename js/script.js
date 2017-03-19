@@ -23,7 +23,6 @@ $('#cachingPopover').popover()
         $.getJSON('https://noembed.com/embed',
         {format: 'json', url: url}, function (data) {
           if(data.error){
-            console.log(videoId + ' is not a thing')
           }else{
             SongObj.title(data.title)
             console.log("Adding " + videoId +": "+ data.title);
@@ -131,12 +130,10 @@ $('#cachingPopover').popover()
           video1.YTPPlay();
           video1.YTPSetVolume(volume);
           volume++;
-          console.log("Fade in")
           if(volume > 100) {
             clearTimeout(self.fadeInTimer);
             self.fadeInTimer = null;
             self.transitioning(false);
-            console.log("Fade in complete")
           }
         };
 
