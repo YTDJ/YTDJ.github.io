@@ -20,7 +20,7 @@ button{
   border: none;
 }
 button:hover{
-  background: blue;
+  background: orange;
 }
 
 #addSong{
@@ -31,7 +31,7 @@ button:hover{
   font-size:1.3em;
 }
 .transitioningClass{
-  color:cyan;
+  color:grey;
   cursor:wait;
 }
 
@@ -43,7 +43,7 @@ button:hover{
     height: 5em;
 }
 .marquee h2 {
-    color: cyan;
+    color: orange;
     display: inline-block;
     padding-left: 100%;
     animation: marquee 15s linear infinite;
@@ -58,14 +58,14 @@ button:hover{
 #settings {
   margin-top:1em;
   padding:1em;
-  background-color:azure;
+  background-color:black;
   border-radius: .5em;
   border-style: solid;
-  border-color: blue;
+  border-color: orange;
 }
 
 #settings input{
-  color:blue;
+  color:orange;
   background-color: #140A00;
   outline: none;
   border: none;
@@ -76,7 +76,7 @@ button:hover{
 }
 
 .popover{
-  color:azure;
+  color:black;
   width:25em;
 }
 
@@ -86,27 +86,27 @@ button:hover{
   margin-top: 1em;
 }
 .addSong #addSongInput{
-  background-color: azure;
-  color:blue;
+  background-color: black;
+  color:orange;
 
   outline: none;
    border: none;
    -webkit-box-shadow: none;
    -moz-box-shadow: none;
    box-shadow: none;
-   border-color: blue;
+   border-color: orange;
    border-radius: 2em;
    border-top: solid;
 }
 .addSong #addSongSpan{
-  color: blue;
-  background-color: azure;
+  color: orange;
+  background-color: black;
   border: none;
   border-radius: 2em;
   border-top:solid;
 }
 .addSong #addSongPlus{
-  color: blue;
+  color: orange;
 }
 
 
@@ -118,12 +118,12 @@ button:hover{
 }
 .dialog{
   padding:3em;
-  background-color:azure;
+  background-color:black;
   width: 50%;
 }
 .ui-dialog-titlebar{
   padding:.5em;
-  background-color:azure;
+  background-color:black;
   font-size: 1.2em;
 }
 .ui-dialog-titlebar-close{
@@ -149,12 +149,12 @@ button:hover{
     padding:10px 0px;
     margin:10px 0px;
     width: 100%;
-    color:blue;
-    background-color: azure;
+    color:orange;
+    background-color: black;
     border-width: 1px;
     border-radius: .5em;
     border-style: solid;
-    border-color: blue;
+    border-color: orange;
     cursor: move;
 }
 .item .glyphicon-remove{
@@ -162,7 +162,7 @@ button:hover{
       padding-right: .5em;
 }
 a {
-    color:blue;
+    color:orange;
 }
 
 .item *:focus {outline: none;}
