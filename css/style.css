@@ -20,7 +20,7 @@ button{
   border: none;
 }
 button:hover{
-  background: #7C98B3;
+  background: orange;
 }
 
 #addSong{
@@ -43,7 +43,7 @@ button:hover{
     height: 5em;
 }
 .marquee h2 {
-    color: #7C98B3;
+    color: orange;
     display: inline-block;
     padding-left: 100%;
     animation: marquee 15s linear infinite;
@@ -58,14 +58,14 @@ button:hover{
 #settings {
   margin-top:1em;
   padding:1em;
-  background-color:#ACCBE1;
+  background-color:black;
   border-radius: .5em;
   border-style: solid;
-  border-color: #7C98B3;
+  border-color: orange;
 }
 
 #settings input{
-  color:#7C98B3;
+  color:orange;
   background-color: #140A00;
   outline: none;
   border: none;
@@ -76,7 +76,7 @@ button:hover{
 }
 
 .popover{
-  color:#ACCBE1;
+  color:black;
   width:25em;
 }
 
@@ -86,27 +86,27 @@ button:hover{
   margin-top: 1em;
 }
 .addSong #addSongInput{
-  background-color: #ACCBE1;
-  color:#7C98B3;
+  background-color: black;
+  color:orange;
 
   outline: none;
    border: none;
    -webkit-box-shadow: none;
    -moz-box-shadow: none;
    box-shadow: none;
-   border-color: #7C98B3;
+   border-color: orange;
    border-radius: 2em;
    border-top: solid;
 }
 .addSong #addSongSpan{
-  color: #7C98B3;
-  background-color: #ACCBE1;
+  color: orange;
+  background-color: black;
   border: none;
   border-radius: 2em;
   border-top:solid;
 }
 .addSong #addSongPlus{
-  color: #7C98B3;
+  color: orange;
 }
 
 
@@ -149,12 +149,12 @@ button:hover{
     padding:10px 0px;
     margin:10px 0px;
     width: 100%;
-    color:#7C98B3;
-    background-color: #ACCBE1;
+    color:orange;
+    background-color: black;
     border-width: 1px;
     border-radius: .5em;
     border-style: solid;
-    border-color: #7C98B3;
+    border-color: orange;
     cursor: move;
 }
 .item .glyphicon-remove{
@@ -162,7 +162,7 @@ button:hover{
       padding-right: .5em;
 }
 a {
-    color:#7C98B3;
+    color:orange;
 }
 
 .item *:focus {outline: none;}
