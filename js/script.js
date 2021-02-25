@@ -310,7 +310,6 @@ $('#cachingPopover').popover()
             }
 
         }else{
-          self.songs.push(new Song("oHg5SJYRHA0"))
           self.songs.push(new Song("EyoutEHpPAU"))
           self.songs.push(new Song("Eco4z98nIQY"))
           self.songs.push(new Song("U9t-slLl30E"))
